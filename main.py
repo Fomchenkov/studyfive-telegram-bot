@@ -146,11 +146,12 @@ def text_handler(message):
 
 
 def main():
-    try:
-        bot.polling(none_stop=True)
-    except Exception as e:
-        print(e)
-        time.sleep(30)
+    while True:
+        try:
+            bot.polling(none_stop=True)
+        except Exception as e:
+            print(e)
+            time.sleep(30)
 
 
 if __name__ == '__main__':
