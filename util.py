@@ -35,6 +35,8 @@ class WorkOrder:
 def generate_order_text(order):
     """
     Generate order text
+    :param order: WorkOrder class instance
+    :return: email text
     """
     text = 'Имя: {!s}\n'.format(order.name)
     text += 'E-mail: {!s}\n'.format(order.email)
@@ -51,6 +53,10 @@ def generate_order_text(order):
 def send_email(email_user, receiver, subject, text=''):
     """
     Send email message
+    :param email_user: EmailUser class instance
+    :param receiver: receiver user email
+    :param subject: email subject
+    :param text: email text
     """
     msg = MIMEMultipart()
     msg['From'] = email_user.login
@@ -58,7 +64,7 @@ def send_email(email_user, receiver, subject, text=''):
     msg['Subject'] = subject
     msg.attach(MIMEText(text, 'plain'))
 
-    server = smtplib.SMTP('smtp.mail.ru', 587)
+    server = smtplib.SMTP('smtp.yandex.ru', 587)
     server.starttls()
     server.login(email_user.login, email_user.password)
     text = msg.as_string()

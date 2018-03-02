@@ -82,9 +82,16 @@ def text_handler(message):
         if 'work_term' not in READY_TO_ORDER[uid]:
             READY_TO_ORDER[uid]['work_term'] = message.text
             text = 'Введите дополнительную информацию, если требуется'
-            return bot.send_message(cid, text)
+            markup = types.ReplyKeyboardMarkup(
+		        one_time_keyboard=True, resize_keyboard=True, row_width=1)
+            markup.add('🆗 Отправить заявку')
+            markup.add('⬅️ Отмена')
+            return bot.send_message(cid, text, reply_markup=markup)
         if 'add_info' not in READY_TO_ORDER[uid]:
-            READY_TO_ORDER[uid]['add_info'] = message.text
+            if message.text == '🆗 Отправить заявку':
+                READY_TO_ORDER[uid]['add_info'] = ''
+            else:
+                READY_TO_ORDER[uid]['add_info'] = message.text
             print(READY_TO_ORDER[uid])
             order = util.WorkOrder(
                 READY_TO_ORDER[uid]['name'],
@@ -101,8 +108,12 @@ def text_handler(message):
             order_text = util.generate_order_text(order)
             print(order_text)
             email_user = util.EmailUser(config.email_login, config.email_password)
-            util.send_email(email_user, config.manager_email, 'Новый заказ', order_text)
             text = 'Ваша заявка оформлена!'
+            try:
+                util.send_email(email_user, config.manager_email, 'Новый заказ', order_text)
+            except Exception as e:
+                print(e)
+                text = 'Не могу отправить вашу заявку. Попробуйте позже.'
             markup = types.ReplyKeyboardMarkup(
                 one_time_keyboard=False, resize_keyboard=True, row_width=1)
             for x in config.main_manu_buttons:
