@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import time
+
 import telebot
 from telebot import types
 
@@ -144,7 +146,11 @@ def text_handler(message):
 
 
 def main():
-    bot.polling(none_stop=True)
+    try:
+        bot.polling(none_stop=True)
+    except Exception as e:
+        print(e)
+        time.sleep(30)
 
 
 if __name__ == '__main__':
