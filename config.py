@@ -1,4 +1,5 @@
 BOT_TOKEN = ''
+BOTAN_KEY = ''
 email_login = ''
 email_password = ''
 manager_email = ''

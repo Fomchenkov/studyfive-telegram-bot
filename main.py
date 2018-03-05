@@ -6,6 +6,7 @@ import telebot
 from telebot import types
 
 import util
+import botan
 import config
 
 
@@ -21,6 +22,7 @@ def start_command(message):
 		one_time_keyboard=False, resize_keyboard=True, row_width=1)
     for x in config.main_manu_buttons:
         markup.add(x)
+    botan.track(config.BOTAN_KEY, cid, message, '/start')
     return bot.send_message(cid, config.main_text, reply_markup=markup)
 
 
