@@ -12,6 +12,7 @@ import config
 
 bot = telebot.TeleBot(config.BOT_TOKEN)
 READY_TO_ORDER = {}
+SEE_QUESTIONS_ANSWERS = []
 
 
 @bot.message_handler(commands=['start'])
@@ -39,6 +40,9 @@ def text_handler(message):
     if message.text == '⬅️ Отмена':
         if uid in READY_TO_ORDER:
             del READY_TO_ORDER[uid]
+        if uid in SEE_QUESTIONS_ANSWERS:
+            SEE_QUESTIONS_ANSWERS.remove(uid)
+
         markup = types.ReplyKeyboardMarkup(
             one_time_keyboard=False, resize_keyboard=True, row_width=1)
         for x in config.main_manu_buttons:
@@ -123,6 +127,13 @@ def text_handler(message):
             for x in config.main_manu_buttons:
                 markup.add(x)
             return bot.send_message(cid, text, reply_markup=markup)
+        
+    if uid in SEE_QUESTIONS_ANSWERS:
+        for x in config.questions_answers:
+            if message.text == x[0]:
+                return bot.send_message(cid, x[1])
+        text = 'Вопрос не найден. Выберите один из списка.'
+        return bot.send_message(cid, text)
 
     # Handle main menu buttons
     if message.text in config.main_manu_buttons:
@@ -137,6 +148,15 @@ def text_handler(message):
             for text in config.services:
                 bot.send_message(cid, text, parse_mode='markdown')
             return
+        elif message.text == 'Вопрос-Ответ':
+            text = 'Выберите вопрос'
+            markup = types.ReplyKeyboardMarkup(
+                one_time_keyboard=False, resize_keyboard=True, row_width=1)
+            for x in config.questions_answers:
+                markup.add(x[0])
+            markup.add('⬅️ Отмена')
+            SEE_QUESTIONS_ANSWERS.append(uid)
+            return bot.send_message(cid, text, reply_markup=markup)
         elif message.text == 'Гарантии':
             for text in config.assurances:
                 bot.send_message(cid, text, parse_mode='markdown')
